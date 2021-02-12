@@ -97,7 +97,12 @@ const Chapter01 = () => {
 
   return (
     <>
-      <IconButton>
+      <IconButton
+        color="primary"
+        onClick={() => {
+          router.push('/')
+        }}
+      >
         <HomeIcon />
       </IconButton>
       <h1>Chapter01... </h1>
