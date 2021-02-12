@@ -1,5 +1,7 @@
 import router from 'next/router'
 import { invoice, plays } from './data'
+import IconButton from '@material-ui/core/IconButton'
+import HomeIcon from '@material-ui/icons/Home'
 
 interface aPerformance {
   id: number
@@ -23,7 +25,7 @@ const Chapter01 = () => {
   const renderPlainText = (data: any, plays: any) => {
     const totalAmount = () => {
       let result = 0
-      invoice.performances.map((perf: aPerformance) => {
+      data.performances.map((perf: aPerformance) => {
         result += amountFor(perf)
       })
       return result
@@ -31,7 +33,7 @@ const Chapter01 = () => {
 
     const totalVolumeCredits = () => {
       let volumeCredits = 0
-      invoice.performances.map((perf: aPerformance) => {
+      data.performances.map((perf: aPerformance) => {
         volumeCredits += volumeCreditsFor(perf)
       })
 
@@ -81,9 +83,9 @@ const Chapter01 = () => {
       return thisAmount
     }
 
-    let result = `청구 내역 (고객명: ${invoice.customer})\n`
+    let result = `청구 내역 (고객명: ${data.customer})\n`
 
-    invoice.performances.map((perf: aPerformance) => {
+    data.performances.map((perf: aPerformance) => {
       result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience})석 \n`
     })
 
@@ -95,6 +97,9 @@ const Chapter01 = () => {
 
   return (
     <>
+      <IconButton>
+        <HomeIcon />
+      </IconButton>
       <h1>Chapter01... </h1>
       {statement(invoice, plays)}
     </>
