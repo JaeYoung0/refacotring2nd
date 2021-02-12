@@ -14,10 +14,13 @@ interface play {
 
 const Chapter01 = () => {
   const statement = (invoice: any, plays: any) => {
-    return renderPlainText(invoice, plays)
+    const statementData = { ...invoice }
+
+    console.log('statementData', statementData)
+    return renderPlainText(statementData, plays)
   }
 
-  const renderPlainText = (invoice: any, plays: any) => {
+  const renderPlainText = (data: any, plays: any) => {
     const totalAmount = () => {
       let result = 0
       invoice.performances.map((perf: aPerformance) => {
