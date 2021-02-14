@@ -69,15 +69,7 @@ const Chapter01 = () => {
       aPerformance.volumeCredits = volumeCreditsFor(aPerformance)
     }
 
-    const statementData = { ...invoice }
-    statementData.performances.map(enrichPerformance)
-
-    console.log('statementData', statementData)
-    return renderPlainText(statementData, plays)
-  }
-
-  const renderPlainText = (data: any, plays: any) => {
-    const totalAmount = () => {
+    const totalAmount = (data: any) => {
       let result = 0
       data.performances.map((perf: aPerformance) => {
         result += perf.amount
@@ -85,7 +77,7 @@ const Chapter01 = () => {
       return result
     }
 
-    const totalVolumeCredits = () => {
+    const totalVolumeCredits = (data: any) => {
       let result = 0
       data.performances.map((perf: aPerformance) => {
         result += perf.volumeCredits
@@ -94,6 +86,16 @@ const Chapter01 = () => {
       return result
     }
 
+    const statementData = { ...invoice }
+    statementData.performances.map(enrichPerformance)
+    statementData.totalAmount = totalAmount(statementData)
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData)
+
+    console.log('statementData', statementData)
+    return renderPlainText(statementData, plays)
+  }
+
+  const renderPlainText = (data: any, plays: any) => {
     const usd = (aNumber: number) => {
       return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(
         aNumber / 100
@@ -106,8 +108,8 @@ const Chapter01 = () => {
       result += `${perf.play.name}: ${usd(perf.amount)} (${perf.audience})석 \n`
     })
 
-    result += `총액: ${usd(totalAmount())}\n`
-    result += `적립 포인트: ${totalVolumeCredits()}점\n`
+    result += `총액: ${usd(data.totalAmount)}\n`
+    result += `적립 포인트: ${data.totalVolumeCredits}점\n`
     console.log(result)
     return result
   }
