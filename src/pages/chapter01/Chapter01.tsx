@@ -70,20 +70,11 @@ const Chapter01 = () => {
     }
 
     const totalAmount = (data: any) => {
-      let result = 0
-      data.performances.map((perf: aPerformance) => {
-        result += perf.amount
-      })
-      return result
+      return data.performances.reduce((total: number, p: any) => total + p.amount, 0)
     }
 
     const totalVolumeCredits = (data: any) => {
-      let result = 0
-      data.performances.map((perf: aPerformance) => {
-        result += perf.volumeCredits
-      })
-
-      return result
+      return data.performances.reduce((total: number, p: any) => total + p.amount, 0)
     }
 
     const statementData = { ...invoice }
