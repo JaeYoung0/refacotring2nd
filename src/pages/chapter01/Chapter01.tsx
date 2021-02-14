@@ -32,12 +32,12 @@ const Chapter01 = () => {
     }
 
     const totalVolumeCredits = () => {
-      let volumeCredits = 0
+      let result = 0
       data.performances.map((perf: aPerformance) => {
-        volumeCredits += volumeCreditsFor(perf)
+        result += volumeCreditsFor(perf)
       })
 
-      return volumeCredits
+      return result
     }
 
     const usd = (aNumber: number) => {
