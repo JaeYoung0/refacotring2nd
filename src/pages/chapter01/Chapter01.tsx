@@ -9,6 +9,7 @@ interface aPerformance {
   audience: number
   play?: any
   amount?: any
+  volumeCredits?: any
 }
 
 interface play {
@@ -45,6 +46,17 @@ const Chapter01 = () => {
       return thisAmount
     }
 
+    const volumeCreditsFor = (aPerformance: aPerformance) => {
+      //   포인트를 적립한다.
+      let volumeCredits = 0
+      volumeCredits += Math.max(aPerformance.audience - 30, 0)
+
+      // 희극관객 5명마다 추가 포인트를 제공한다.
+      if ('comedy' === aPerformance.play.type) volumeCredits += Math.floor(aPerformance.audience / 5)
+
+      return volumeCredits
+    }
+
     const enrichPerformance = (aPerformance: aPerformance) => {
       // 이렇게 하면 error
       // const result = { ...aPerformance }
@@ -54,6 +66,7 @@ const Chapter01 = () => {
 
       aPerformance.play = playFor(aPerformance)
       aPerformance.amount = amountFor(aPerformance)
+      aPerformance.volumeCredits = volumeCreditsFor(aPerformance)
     }
 
     const statementData = { ...invoice }
@@ -75,7 +88,7 @@ const Chapter01 = () => {
     const totalVolumeCredits = () => {
       let result = 0
       data.performances.map((perf: aPerformance) => {
-        result += volumeCreditsFor(perf)
+        result += perf.volumeCredits
       })
 
       return result
@@ -85,17 +98,6 @@ const Chapter01 = () => {
       return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(
         aNumber / 100
       )
-    }
-
-    const volumeCreditsFor = (aPerformance: aPerformance) => {
-      //   포인트를 적립한다.
-      let volumeCredits = 0
-      volumeCredits += Math.max(aPerformance.audience - 30, 0)
-
-      // 희극관객 5명마다 추가 포인트를 제공한다.
-      if ('comedy' === aPerformance.play.type) volumeCredits += Math.floor(aPerformance.audience / 5)
-
-      return volumeCredits
     }
 
     let result = `청구 내역 (고객명: ${data.customer})\n`
