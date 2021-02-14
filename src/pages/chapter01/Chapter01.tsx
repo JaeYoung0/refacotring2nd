@@ -8,24 +8,56 @@ interface aPerformance {
   playID: any
   audience: number
   play?: any
+  amount?: any
 }
 
 interface play {
-  name: string
-  type: string
+  id: number
+  playID: string
+  audience: number
 }
 
 const Chapter01 = () => {
   const statement = (invoice: any, plays: any) => {
     const playFor = (aPerformance: aPerformance) => plays[aPerformance.playID]
 
-    const enrichPerformance = (aPerformance: aPerformance) => {
-      const result = { ...aPerformance }
-      result.play = playFor(result)
-      return result
+    const amountFor = (aPerformance: aPerformance) => {
+      let thisAmount = 0
+      switch (aPerformance.play.type) {
+        case 'tragedy':
+          thisAmount = 40000
+          if (aPerformance.audience > 30) {
+            thisAmount += 1000 * (aPerformance.audience - 30)
+          }
+          break
+
+        case 'comedy':
+          thisAmount = 30000
+          if (aPerformance.audience > 20) {
+            thisAmount += 10000 + 500 * (aPerformance.audience - 20)
+          }
+          thisAmount += 300 * aPerformance.audience
+          break
+        default:
+          throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`)
+      }
+
+      return thisAmount
     }
 
-    const statementData = { ...invoice.customer, ...invoice.performances.map(enrichPerformance) }
+    const enrichPerformance = (aPerformance: aPerformance) => {
+      // 이렇게 하면 error
+      // const result = { ...aPerformance }
+      // result.play = playFor(result)
+      // result.amount = amountFor(result)
+      // return result
+
+      aPerformance.play = playFor(aPerformance)
+      aPerformance.amount = amountFor(aPerformance)
+    }
+
+    const statementData = { ...invoice }
+    statementData.performances.map(enrichPerformance)
 
     console.log('statementData', statementData)
     return renderPlainText(statementData, plays)
@@ -35,7 +67,7 @@ const Chapter01 = () => {
     const totalAmount = () => {
       let result = 0
       data.performances.map((perf: aPerformance) => {
-        result += amountFor(perf)
+        result += perf.amount
       })
       return result
     }
@@ -66,34 +98,10 @@ const Chapter01 = () => {
       return volumeCredits
     }
 
-    const amountFor = (aPerformance: any) => {
-      let thisAmount = 0
-      switch (aPerformance.play.type) {
-        case 'tragedy':
-          thisAmount = 40000
-          if (aPerformance.audience > 30) {
-            thisAmount += 1000 * (aPerformance.audience - 30)
-          }
-          break
-
-        case 'comedy':
-          thisAmount = 30000
-          if (aPerformance.audience > 20) {
-            thisAmount += 10000 + 500 * (aPerformance.audience - 20)
-          }
-          thisAmount += 300 * aPerformance.audience
-          break
-        default:
-          throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`)
-      }
-
-      return thisAmount
-    }
-
     let result = `청구 내역 (고객명: ${data.customer})\n`
 
     data.performances.map((perf: aPerformance) => {
-      result += `${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience})석 \n`
+      result += `${perf.play.name}: ${usd(perf.amount)} (${perf.audience})석 \n`
     })
 
     result += `총액: ${usd(totalAmount())}\n`
